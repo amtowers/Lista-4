@@ -26,9 +26,82 @@ Entende-se razoável, do ponto de vista da economia ortodoxa, que o crescimento 
 
 ## Indicador da efetividade da política econômica (IFE)
 
-Um possível indicador empírico da efetividade da polítia econômica (IFE) pode ser dada pela seguinte equação:
+Um possível indicador empírico da efetividade da política econômica (IFE) pode ser dada pela seguinte equação:
 
 **![](C:\Users\Atowers\Pictures\Saved Pictures\Image Lista 4.png)**
+
+## Descrição do Banco de Dados 1
+
+```{r,message=FALSE,warning=FALSE,echo=FALSE}
+library(dplyr)
+library(ggplot2)
+library(magrittr)
+library(knitr)
+library(kableExtra)
+library(rmarkdown)
+library(tidyverse)
+library(lubridate)
+library(janitor)
+library(readxl)
+library(tidyr)
+library(tibble)
+library(haven)
+library(stringr)
+library(psych)
+library(ggcorrplot)
+setwd("~/Métodos Quantitativos/Lista-4")
+pol_econ <- readxl::read_xlsx("~/Métodos Quantitativos/Lista-4/Dados lista 4 1.xlsx",col_types = c("text","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric"))
+glimpse(pol_econ)
+```
+
+## Descrição do Banco de Dados 2
+```{r,message=FALSE,warning=FALSE,echo=FALSE}
+head(pol_econ,5)
+
+```
+
+
+## Descrição do Banco de Dados 3
+```{r,,message=FALSE,warning=FALSE,echo=FALSE}
+pol_econ %>% mutate_if(is.numeric, round, 2) %>% head() %>% kableExtra::kable(align = "c") %>% kable_styling("striped", full_width = F)
+
+```
+
+## Cálculo do Alfa de Cronbach
+```{r,message=FALSE,warning=FALSE,echo=FALSE}
+pol_econ <- na.omit(pol_econ)
+alfa <- psych::alpha(as.matrix(pol_econ[,-1],'check.keys=TRUE'))
+alfa
+```
+
+## Correlação entre as variáveis
+```{r,message=FALSE,warning=FALSE,echo=FALSE}
+corr <- round(cor(pol_econ[,-1]), 1)
+corr
+```
+
+## Correlograma
+```{r,message=FALSE,warning=FALSE,echo=FALSE}
+ggcorrplot(corr, hc.order = TRUE, 
+           type = "lower", 
+           lab = TRUE, 
+           lab_size = 3, 
+           method="circle", 
+           colors = c("tomato2", "white", "springgreen3"), 
+           title="Correlograma - base de dados Política Econômica", 
+           ggtheme=theme_bw)
+```
+
+## Cálculo do IFE
+```{r,message=FALSE,warning=FALSE,echo=FALSE}
+pol_econ %>% select(ANO,EXP_VIDA,SUP_PRIM,MORT_INF,POBR,GINI,JUROS) %>% mutate(IFE=100*(SUP_PRIM+EXP_VIDA)/(MORT_INF+POBR+GINI+JUROS))
+```
+
+
+## Gráfico do IFE por ano e superávit primário
+```{r,message=FALSE,warning=FALSE,echo=FALSE}
+pol_econ %>% select(ANO,EXP_VIDA,SUP_PRIM,MORT_INF,POBR,GINI,JUROS) %>% mutate(IFE=100*(SUP_PRIM+EXP_VIDA)/(MORT_INF+POBR+GINI+JUROS)) %>% ggplot(aes(ANO,IFE,fill=SUP_PRIM)) + geom_bar(stat = "identity") + theme_classic(base_size = 12) + scale_fill_viridis_c() + xlab("Ano") +ylab("IFE") + ggtitle("Efetividade da Política Econômica x Superávit Primário")+geom_label(aes(label=round(IFE,0)),color="black",fill="white",size=3)
+```
 
 
 ## Slide with Bullets
