@@ -1,5 +1,5 @@
 ---
-title: "index"
+title: "*A Política Econômica promove a fruição da saúde e da igualdade econômica?*"
 author: "Adelmar de Miranda Torres - 19/0072334"
 date: "01/12/2020"
 output: ioslides_presentation
@@ -9,11 +9,27 @@ output: ioslides_presentation
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-## R Markdown
+## A efetividade de direitos sociais
 
-This is an R Markdown presentation. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+A política econômica, representada pelo tripé macroeconômico – na figura das variáveis superávit primário (SP)
+e juros (J), deveria ter como um dos seus objetivos centrais a promoção da efetividade da fruição de direitos subjetivos dos cidadãos, por exemplo de dois direitos subjetivos fundamentais a ela subjacente: à saúde e à igualdade.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document.
+A escolha desses direitos é decorrente, de um lado, da decomposição analítica da fruição (disponibilidade de dados); e, de outro, da importância da saúde e da igualdade econômica para o desenvolvimento econômico e social de uma sociedade que se pretende ser desenvolvida.
+
+## Decomposição analítica do direito à saúde e à igualdade econômica
+
+Adota-se quatro indicadores representativos desses direitos no período de 2002 a 2019. No caso do direito à saúde, escolheu-se a expectativa de vida ao nascer - EVN e a taxa de mortalidade infantil (por mil nascidos vivos) - TMI. Em relação ao direito à igualdade, optou-se pela taxa de pobreza (TP) e o índice de gini (IG).
+
+## Relação da política econômica com o direito à saúde e à igualdade econômica
+
+Entende-se razoável, do ponto de vista da economia ortodoxa, que o crescimento do PIB (correlacionado com uma política fiscal sustentável: existência de superávit primário; e como uma política monetária frouxa: juros baixos) teria que resultar na melhoria desses indicadores sociais que afetam a população de um país como um todo.
+
+## Indicador da efetividade da política econômica (IFE)
+
+Um possível indicador empírico da efetividade da polítia econômica (IFE) pode ser dada pela seguinte equação:
+
+**![](C:\Users\Atowers\Pictures\Saved Pictures\Image Lista 4.png)**
+
 
 ## Slide with Bullets
 
