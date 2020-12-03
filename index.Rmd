@@ -11,14 +11,14 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ## A efetividade de direitos sociais
 
-A política econômica, representada pelo tripé macroeconômico – na figura das variáveis superávit primário (SP)
-e juros (J), deveria ter como um dos seus objetivos centrais a promoção da efetividade da fruição de direitos subjetivos dos cidadãos, por exemplo de dois direitos subjetivos fundamentais a ela subjacente: à saúde e à igualdade.
+A política econômica, representada pelo tripé macroeconômico – na figura das variáveis **superávit primário (SP)**
+e **juros (J)**, deveria ter como um dos seus objetivos centrais a promoção da efetividade da fruição de direitos subjetivos dos cidadãos, por exemplo de dois direitos subjetivos fundamentais a ela subjacente: à saúde e à igualdade.
 
 A escolha desses direitos é decorrente, de um lado, da decomposição analítica da fruição (disponibilidade de dados); e, de outro, da importância da saúde e da igualdade econômica para o desenvolvimento econômico e social de uma sociedade que se pretende ser desenvolvida.
 
 ## Decomposição analítica do direito à saúde e à igualdade econômica
 
-Adota-se quatro indicadores representativos desses direitos no período de 2002 a 2019. No caso do direito à saúde, escolheu-se a expectativa de vida ao nascer - EVN e a taxa de mortalidade infantil (por mil nascidos vivos) - TMI. Em relação ao direito à igualdade, optou-se pela taxa de pobreza (TP) e o índice de gini (IG).
+Adota-se quatro indicadores representativos desses direitos no período de 2002 a 2019. No caso do direito à saúde, escolheu-se a **expectativa de vida ao nascer - EVN** e a **taxa de mortalidade infantil (por mil nascidos vivos) - TMI**. Em relação ao direito à igualdade, optou-se pela **taxa de pobreza (TP)** e o **índice de gini (IG)**.
 
 ## Relação da política econômica com o direito à saúde e à igualdade econômica
 
@@ -49,6 +49,7 @@ library(haven)
 library(stringr)
 library(psych)
 library(ggcorrplot)
+library(dataMaid)
 setwd("~/Métodos Quantitativos/Lista-4")
 pol_econ <- readxl::read_xlsx("~/Métodos Quantitativos/Lista-4/Dados lista 4 1.xlsx",col_types = c("text","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric"))
 glimpse(pol_econ)
@@ -62,21 +63,22 @@ head(pol_econ,5)
 
 
 ## Descrição do Banco de Dados 3
-```{r,,message=FALSE,warning=FALSE,echo=FALSE}
+```{r,message=FALSE,warning=FALSE,echo=FALSE}
 pol_econ %>% mutate_if(is.numeric, round, 2) %>% head() %>% kableExtra::kable(align = "c") %>% kable_styling("striped", full_width = F)
 
 ```
 
+
 ## Cálculo do Alfa de Cronbach
 ```{r,message=FALSE,warning=FALSE,echo=FALSE}
 pol_econ <- na.omit(pol_econ)
-alfa <- psych::alpha(as.matrix(pol_econ[,-1],'check.keys=TRUE'))
-alfa
+alfa <- psych::alpha(as.matrix(pol_econ[,-c(1,8)],check.keys=TRUE))
+summary(alfa)
 ```
 
 ## Correlação entre as variáveis
 ```{r,message=FALSE,warning=FALSE,echo=FALSE}
-corr <- round(cor(pol_econ[,-1]), 1)
+corr <- round(cor(pol_econ[,-c(1,8)]), 1)
 corr
 ```
 
@@ -92,9 +94,16 @@ ggcorrplot(corr, hc.order = TRUE,
            ggtheme=theme_bw)
 ```
 
-## Cálculo do IFE
+## Cálculo da IFEx100
 ```{r,message=FALSE,warning=FALSE,echo=FALSE}
 pol_econ %>% select(ANO,EXP_VIDA,SUP_PRIM,MORT_INF,POBR,GINI,JUROS) %>% mutate(IFE=100*(SUP_PRIM+EXP_VIDA)/(MORT_INF+POBR+GINI+JUROS))
+```
+
+## Evolução da IFE no período 2002-2015
+O gráfico mostra que a efetividade da política econômica (IFE) alcança o valor máximo em 2013 e começa a declinar em 2014, quando o superávit primário torna-se negativo.
+```{r,message=FALSE,warning=FALSE,echo=FALSE}
+pol_econ %>% select(ANO,EXP_VIDA,SUP_PRIM,MORT_INF,POBR,GINI,JUROS) %>% mutate(IFE=100*(SUP_PRIM+EXP_VIDA)/(MORT_INF+POBR+GINI+JUROS)) %>% ggplot(aes(ANO,IFE)) + geom_point(size=12,color="red") + geom_label(aes(label=round(IFE,0)),nudge_x = 0.35, size = 4)
+
 ```
 
 
@@ -103,22 +112,24 @@ pol_econ %>% select(ANO,EXP_VIDA,SUP_PRIM,MORT_INF,POBR,GINI,JUROS) %>% mutate(I
 pol_econ %>% select(ANO,EXP_VIDA,SUP_PRIM,MORT_INF,POBR,GINI,JUROS) %>% mutate(IFE=100*(SUP_PRIM+EXP_VIDA)/(MORT_INF+POBR+GINI+JUROS)) %>% ggplot(aes(ANO,IFE,fill=SUP_PRIM)) + geom_bar(stat = "identity") + theme_classic(base_size = 12) + scale_fill_viridis_c() + xlab("Ano") +ylab("IFE") + ggtitle("Efetividade da Política Econômica x Superávit Primário")+geom_label(aes(label=round(IFE,0)),color="black",fill="white",size=3)
 ```
 
-
-## Slide with Bullets
-
-- Bullet 1
-- Bullet 2
-- Bullet 3
-
-## Slide with R Output
-
-```{r cars, echo = TRUE}
-summary(cars)
+## Gráfico do IFE por ano e expectativa de vida
+```{r,message=FALSE,warning=FALSE,echo=FALSE}
+pol_econ %>% select(ANO,EXP_VIDA,SUP_PRIM,MORT_INF,POBR,GINI,JUROS) %>% mutate(IFE=100*(SUP_PRIM+EXP_VIDA)/(MORT_INF+POBR+GINI+JUROS)) %>% ggplot(aes(ANO,IFE,fill=EXP_VIDA)) + geom_bar(stat = "identity") + theme_bw(base_size = 12) + coord_flip() + scale_fill_gradientn(colours = terrain.colors(6)) + xlab("Ano") +ylab("IFE") + ggtitle("Efetividade da Política Econômica x Expectativa de Vida")+geom_label(aes(label=round(IFE,0)),color="black",fill="white",size=3)
 ```
 
-## Slide with Plot
-
-```{r pressure}
-plot(pressure)
+## Gráfico do IFE por ano e mortalidade infantil
+```{r,message=FALSE,warning=FALSE,echo=FALSE}
+pol_econ %>% select(ANO,EXP_VIDA,SUP_PRIM,MORT_INF,POBR,GINI,JUROS) %>% mutate(IFE=100*(SUP_PRIM+EXP_VIDA)/(MORT_INF+POBR+GINI+JUROS)) %>% ggplot(aes(ANO,IFE,fill=MORT_INF)) + geom_bar(stat = "identity") + theme_minimal(base_size = 12) + scale_fill_gradient(low = "red",
+high = "yellow") + xlab("Ano") +ylab("IFE") + ggtitle("Efetividade da Política Econômica x Mortalidade Infantil")+geom_label(aes(label=round(IFE,0)),color="black",fill="white",size=3)
 ```
+
+## Gráfico do IFE por ano e Gini
+```{r,message=FALSE,warning=FALSE,echo=FALSE}
+pol_econ %>% select(ANO,EXP_VIDA,SUP_PRIM,MORT_INF,POBR,GINI,JUROS) %>% mutate(IFE=100*(SUP_PRIM+EXP_VIDA)/(MORT_INF+POBR+GINI+JUROS)) %>% ggplot(aes(ANO,IFE,fill=GINI)) + geom_bar(stat = "identity") + theme_grey(base_size = 12) + coord_flip() + scale_fill_gradient2(low = "red", high = "blue",mid = "white", midpoint = .54) + xlab("Ano") +ylab("IFE") + ggtitle("Efetividade da Política Econômica x Gini")+geom_label(aes(label=round(IFE,0)),color="black",fill="white",size=3)
+```
+
+
+
+
+
 
